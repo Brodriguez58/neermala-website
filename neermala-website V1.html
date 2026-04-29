@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neermala Persaud</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect } = React;
+
+    // Simple inline SVG icons (replacing lucide-react)
+    const Icon = ({ path, size = 16 }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {path}
+      </svg>
+    );
+    const Linkedin = (p) => <Icon {...p} path={<><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></>} />;
+    const Mail = (p) => <Icon {...p} path={<><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></>} />;
+    const Twitter = (p) => <Icon {...p} path={<path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>} />;
+    const Lock = (p) => <Icon {...p} path={<><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>} />;
+    const X = (p) => <Icon {...p} path={<><path d="M18 6 6 18"/><path d="m6 6 12 12"/></>} />;
+    const Plus = (p) => <Icon {...p} path={<><path d="M5 12h14"/><path d="M12 5v14"/></>} />;
+    const Edit2 = (p) => <Icon {...p} path={<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>} />;
+    const Trash2 = (p) => <Icon {...p} path={<><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></>} />;
+    const Save = (p) => <Icon {...p} path={<><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></>} />;
+    const Calendar = (p) => <Icon {...p} path={<><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></>} />;
+    const ChevronRight = (p) => <Icon {...p} path={<polyline points="9 18 15 12 9 6"/>} />;
+    const Sparkles = (p) => <Icon {...p} path={<path d="M12 3l1.9 5.8L20 11l-5.8 2.1L12 19l-2.1-5.9L4 11l5.9-2.2Z"/>} />;
+    const BookOpen = (p) => <Icon {...p} path={<><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>} />;
+    const Briefcase = (p) => <Icon {...p} path={<><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></>} />;
+    const FileText = (p) => <Icon {...p} path={<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></>} />;
+    const GraduationCap = (p) => <Icon {...p} path={<><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></>} />;
+    const Languages = (p) => <Icon {...p} path={<><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></>} />;
+    const Cpu = (p) => <Icon {...p} path={<><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="4"/><line x1="15" y1="2" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="22"/><line x1="15" y1="20" x2="15" y2="22"/><line x1="20" y1="9" x2="22" y2="9"/><line x1="20" y1="15" x2="22" y2="15"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="2" y1="15" x2="4" y2="15"/></>} />;
+    const Globe = (p) => <Icon {...p} path={<><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></>} />;
+    const Users = (p) => <Icon {...p} path={<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></>} />;
+    const Heart = (p) => <Icon {...p} path={<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>} />;
+    const Scale = (p) => <Icon {...p} path={<><path d="m16 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/><path d="m2 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></>} />;
+
+    const STORAGE_KEY = "neermala_blog_posts_v1";
+    const OWNER_PASSWORD = "owner2026";
+
+    function App() {
+      const [activeTab, setActiveTab] = useState("about");
+      const [posts, setPosts] = useState([]);
+      const [isOwner, setIsOwner] = useState(false);
+      const [showLogin, setShowLogin] = useState(false);
+      const [password, setPassword] = useState("");
+      const [loginError, setLoginError] = useState("");
+      const [editingPost, setEditingPost] = useState(null);
+      const [isCreating, setIsCreating] = useState(false);
+      const [draftTitle, setDraftTitle] = useState("");
+      const [draftBody, setDraftBody] = useState("");
+      const [selectedPost, setSelectedPost] = useState(null);
+
+      useEffect(() => {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            setPosts(JSON.parse(saved));
+          } else {
+            const seed = [{
+              id: "post-welcome",
+              title: "Welcome — Notes from the Field",
+              body: "This blog is where I share reflections on migration, human rights, and the quiet work of building community across borders. Expect weekly updates from research trips, conferences, and the people whose stories shape the work. Thanks for reading.",
+              date: new Date().toISOString(),
+            }];
+            setPosts(seed);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
+          }
+        } catch (e) { console.error(e); }
+      }, []);
+
+      const savePosts = (next) => {
+        setPosts(next);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) { console.error(e); }
+      };
+
+      const handleLogin = () => {
+        if (password === OWNER_PASSWORD) {
+          setIsOwner(true); setShowLogin(false); setPassword(""); setLoginError("");
+        } else {
+          setLoginError("Incorrect password");
+        }
+      };
+
+      const startCreate = () => { setIsCreating(true); setEditingPost(null); setDraftTitle(""); setDraftBody(""); };
+      const startEdit = (p) => { setEditingPost(p.id); setIsCreating(false); setDraftTitle(p.title); setDraftBody(p.body); };
+      const cancelEdit = () => { setEditingPost(null); setIsCreating(false); setDraftTitle(""); setDraftBody(""); };
+      const savePost = () => {
+        if (!draftTitle.trim() || !draftBody.trim()) return;
+        if (isCreating) {
+          savePosts([{ id: "post-" + Date.now(), title: draftTitle.trim(), body: draftBody.trim(), date: new Date().toISOString() }, ...posts]);
+        } else if (editingPost) {
+          savePosts(posts.map(p => p.id === editingPost ? { ...p, title: draftTitle.trim(), body: draftBody.trim() } : p));
+        }
+        cancelEdit();
+      };
+      const deletePost = (id) => {
+        if (!confirm("Delete this post?")) return;
+        savePosts(posts.filter(p => p.id !== id));
+        if (selectedPost?.id === id) setSelectedPost(null);
+      };
+
+      const formatDate = (iso) => new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
+      const tabs = [
+        { id: "about", label: "ABOUT" },
+        { id: "research", label: "RESEARCH" },
+        { id: "experience", label: "EXPERIENCE" },
+        { id: "publications", label: "PUBLICATIONS" },
+        { id: "blog", label: "BLOG" },
+        { id: "contact", label: "CONTACT" },
+      ];
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-emerald-50 text-slate-800">
+          <div className="border-b border-emerald-100 bg-white/70 backdrop-blur">
+            <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
+              <div className="flex gap-3">
+                <a href="https://www.linkedin.com/in/neermalapersaud" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-blue-700 hover:bg-blue-800 flex items-center justify-center text-white transition cursor-pointer"><Linkedin size={16} /></a>
+                <a className="w-8 h-8 rounded-full bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center text-white transition cursor-pointer"><Mail size={16} /></a>
+                <a href="https://x.com/neermalapersaud" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center text-white transition cursor-pointer"><Twitter size={16} /></a>
+              </div>
+              <button onClick={() => isOwner ? setIsOwner(false) : setShowLogin(true)} className="text-xs text-slate-500 hover:text-blue-700 flex items-center gap-1 transition">
+                <Lock size={12} />{isOwner ? "Sign out" : "Owner login"}
+              </button>
+            </div>
+          </div>
+
+          <nav className="bg-white border-b-2 border-emerald-500 shadow-sm sticky top-0 z-40">
+            <div className="max-w-6xl mx-auto px-6">
+              <div className="flex flex-wrap justify-center gap-1 py-3">
+                {tabs.map(tab => (
+                  <button key={tab.id} onClick={() => { setActiveTab(tab.id); setSelectedPost(null); }}
+                    className={`px-4 py-2 text-sm font-semibold tracking-wide rounded-md transition ${activeTab === tab.id ? "bg-gradient-to-r from-blue-700 to-emerald-600 text-white shadow-md" : "text-slate-700 hover:text-blue-700 hover:bg-emerald-50"}`}>
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </nav>
+
+          <header className="max-w-6xl mx-auto px-6 pt-10 pb-6">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <img src="Neermala-Headshot.PNG" alt="Neermala Persaud" className="w-32 h-32 rounded-full object-cover shadow-lg ring-4 ring-white" />
+              <div className="text-center md:text-left">
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                  <span className="text-blue-800">N</span><span className="text-slate-800">EERMALA </span>
+                  <span className="text-blue-800">P</span><span className="text-slate-800">ERSAUD</span>
+                </h1>
+                <p className="mt-1 text-lg text-emerald-700 font-medium tracking-wider">AMERICAN UNIVERSITY · SCHOOL OF INTERNATIONAL SERVICE</p>
+                <p className="mt-1 text-sm text-slate-500 italic">Ethics, Peace & Human Rights · Migration · Policy</p>
+              </div>
+            </div>
+          </header>
+
+          <main className="max-w-6xl mx-auto px-6 pb-16">
+            {activeTab === "about" && <AboutSection />}
+            {activeTab === "research" && <ResearchSection />}
+            {activeTab === "experience" && <ExperienceSection />}
+            {activeTab === "publications" && <PublicationsSection />}
+            {activeTab === "contact" && <ContactSection />}
+            {activeTab === "blog" && <BlogSection {...{ posts, isOwner, isCreating, editingPost, draftTitle, draftBody, setDraftTitle, setDraftBody, startCreate, startEdit, cancelEdit, savePost, deletePost, selectedPost, setSelectedPost, formatDate }} />}
+          </main>
+
+          <footer className="bg-gradient-to-r from-blue-800 to-emerald-700 text-white py-8 mt-8">
+            <div className="max-w-6xl mx-auto px-6 text-center">
+              <div className="flex justify-center gap-4 mb-3">
+                <a href="https://www.linkedin.com/in/neermalapersaud" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition cursor-pointer"><Linkedin size={16} /></a>
+                <a className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition cursor-pointer"><Mail size={16} /></a>
+                <a href="https://x.com/neermalapersaud" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition cursor-pointer"><Twitter size={16} /></a>
+              </div>
+              <p className="text-sm text-white/80">© 2026 Neermala Persaud. All rights reserved.</p>
+            </div>
+          </footer>
+
+          {showLogin && (
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm border-t-4 border-emerald-500">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-bold text-blue-800 flex items-center gap-2"><Lock size={18} /> Owner Login</h3>
+                  <button onClick={() => { setShowLogin(false); setLoginError(""); setPassword(""); }} className="text-slate-400 hover:text-slate-700"><X size={20} /></button>
+                </div>
+                <p className="text-xs text-slate-500 mb-3">Demo password: <code className="bg-emerald-50 px-1 rounded text-emerald-700">owner2026</code></p>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleLogin()} placeholder="Enter password"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" autoFocus />
+                {loginError && <p className="text-red-600 text-xs mt-2">{loginError}</p>}
+                <button onClick={handleLogin} className="w-full mt-3 bg-gradient-to-r from-blue-700 to-emerald-600 text-white py-2 rounded-md font-semibold hover:opacity-90 transition">Sign in</button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function AboutSection() {
+      return (
+        <section className="space-y-6">
+          <div className="bg-white rounded-xl shadow-sm border border-emerald-100 p-8">
+            <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2"><Sparkles size={22} /> Bio</h2>
+            <div className="space-y-4 text-slate-700 leading-relaxed">
+              <p>I'm a researcher, policy analyst, and human rights practitioner working at the intersection of <span className="text-emerald-700 font-semibold">migration, peace and conflict resolution, and diaspora identity</span>. I'm completing my M.A. in Ethics, Peace, and Human Rights at American University's School of International Service, with a concentration in Peace and Conflict Resolution and a Certificate in Global Migration.</p>
+              <p>I currently serve as a <span className="text-blue-800 font-semibold">Fellow at the Stimson Center</span>, where I help lead planning for the 2026 T-20 conference and co-author flagship reports on global governance innovation, climate financing, peacekeeping, and the future of international cooperation. I'm also the <span className="text-blue-800 font-semibold">Director of Women, Peace and Security (WPS) at American University</span>, where I've built a community of students across the DMV committed to advancing the WPS agenda.</p>
+              <p>My research spans continents and methodologies. Most recently, I conducted independent field research in Guyana with Indo-Guyanese, Afro-Guyanese, and Indigenous communities, exploring how cultural practices are preserved across generations in the face of displacement. I contribute to the Roti Collective Lab, using ethnography and ArcGIS to trace how culinary traditions carry migration stories, and to the Mass Atrocity Research Initiative (MARI), where I study early warning indicators and social resilience.</p>
+              <p>Before graduate school, I spent nearly three years as an Immigration Analyst at VisaNation Law Group, reviewing family- and employment-based petitions and helping design client-facing tools to improve access to legal services. My earlier experience includes the National Immigrant Women's Advocacy Project, the Suffolk County DA's Office, and the U.S. Congress. I speak Guyanese Creole fluently and intermediate Spanish.</p>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            <InfoCard IconComp={GraduationCap} label="Education" lines={["M.A., American University (2026)", "B.A., Political Science (2021)"]} />
+            <InfoCard IconComp={Languages} label="Languages" lines={["English", "Guyanese Creole (Fluent)", "Spanish (Intermediate)"]} />
+            <InfoCard IconComp={Cpu} label="Technical" lines={["SQL · STATA · R · NVivo", "Tableau · Power BI · ArcGIS", "Figma · Salesforce · Airtable"]} />
+          </div>
+        </section>
+      );
+    }
+
+    function InfoCard({ IconComp, label, lines }) {
+      return (
+        <div className="bg-white rounded-xl shadow-sm border border-emerald-100 p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center text-white"><IconComp size={16} /></div>
+            <h3 className="font-bold text-blue-800 text-sm tracking-wide uppercase">{label}</h3>
+          </div>
+          <ul className="text-sm text-slate-600 space-y-1">{lines.map((l, i) => <li key={i}>{l}</li>)}</ul>
+        </div>
+      );
+    }
+
+    function ResearchSection() {
+      const projects = [
+        { IconComp: Globe, title: "Independent Field Research, Guyana", period: "Dec 2025", text: "Interviewed Indo-Guyanese, Afro-Guyanese, and Indigenous communities in Georgetown and Berbice on how cultural practices are preserved and how families cope with displacement across generations. Produced qualitative analysis of social resilience and identity preservation." },
+        { IconComp: Heart, title: "Roti Collective Lab (Prof. Durrani)", period: "Oct 2025 – Present", text: "Ethnographic research on roti-making as a thread connecting migration experiences across the diaspora. Uses ArcGIS to visually document and share narratives of culinary heritage." },
+        { IconComp: Scale, title: "Mass Atrocity Research Initiative (MARI)", period: "Oct 2024 – Present", text: "Research on early warning indicators, policy engagement, and social resilience efforts. Includes analysis of how mass atrocity and genocide are taught in U.S. secondary education curricula." },
+        { IconComp: Users, title: "Stimson Center Fellowship", period: "Jan 2025 – Present", text: "Leading consultations with think tank stakeholders for the 2026 T-20 conference. Research on migration, climate financing, and peacekeeping, with co-authorship on the GGIR'25 and FIC'25 reports. Partnering with the Savannah Centre on the ANUMDI and ACUNS Annual Meeting in Nairobi." },
+      ];
+      return (
+        <section>
+          <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center gap-2"><BookOpen size={24} /> Research</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            {projects.map((p, i) => {
+              const IconComp = p.IconComp;
+              return (
+                <div key={i} className="bg-white rounded-xl shadow-sm border border-emerald-100 p-6 hover:shadow-md hover:border-emerald-300 transition">
+                  <div className="flex items-start gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center text-white shrink-0"><IconComp size={18} /></div>
+                    <div>
+                      <h3 className="font-bold text-blue-800 leading-tight">{p.title}</h3>
+                      <p className="text-xs text-emerald-700 mt-0.5">{p.period}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-600 leading-relaxed mt-2">{p.text}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      );
+    }
+
+    function ExperienceSection() {
+      const roles = [
+        { title: "Fellow", org: "Stimson Center", location: "Washington, D.C.", period: "Jan 2025 – Present", bullets: [
+          "Planning the 2026 annual T-20 conference and leading consultations with think tank stakeholders.",
+          "Researching migration, climate financing, and peacekeeping; co-authoring GGIR'25 and FIC'25 reports.",
+          "Led planning committee meetings with Nigerian partners at the Savannah Centre for the ANUMDI and ACUNS Annual Meeting in Nairobi.",
+        ]},
+        { title: "Director, Women, Peace and Security (WPS)", org: "American University", location: "Washington, D.C.", period: "Sep 2024 – Present", bullets: [
+          "Plan events (networking, panels, social), manage communications, and build a DMV-wide community of students advancing the WPS agenda.",
+        ]},
+        { title: "Immigration Analyst", org: "VisaNation Law Group", location: "Fort Lauderdale, FL", period: "Feb 2023 – Dec 2025", bullets: [
+          "Ensured USCIS compliance through regular internal audits.",
+          "Conducted UI/UX testing on custom family immigration software to identify and implement improvements.",
+          "Used CRM/CMS systems to automate workflows and extract data supporting CEO decision-making.",
+          "Designed a new client-facing program to improve intake and client-legal team communication.",
+          "Reviewed family and employment petitions, including I-130, I-485, I-765, I-864, and I-129 forms.",
+        ]},
+        { title: "Key Leader", org: "Lululemon", location: "Sunrise, FL", period: "Dec 2021 – Dec 2022", bullets: [
+          "Educated guests on product features and made tailored recommendations, contributing to a 15% sales increase during peak seasons.",
+        ]},
+        { title: "Legal Secretary", org: "Mukerjee Law Group, P.A.", location: "Coral Springs, FL", period: "Aug 2021 – Sep 2022", bullets: [
+          "Prepared and submitted complaints, motions, and notices to Florida courts on behalf of plaintiffs.",
+          "Managed attorney calendar, retrieved medical records, and facilitated client communication.",
+        ]},
+        { title: "Legal Intern", org: "National Immigrant Women's Advocacy Project", location: "Washington, D.C.", period: "Oct 2020 – May 2021", bullets: [
+          "Created toolkits on U-visa, T-visa, VAWA, Asylum, and H-1B processes, plus training materials on DV/SA.",
+          "Analyzed survivor intake procedures and staffed the hotline, connecting survivors with legal assistance.",
+        ]},
+        { title: "Interfaith Fellow", org: "American University", location: "Washington, D.C.", period: "Aug 2019 – May 2021", bullets: [
+          "Managed social media, newsletters, and events for interfaith projects; provided orientations and campus support.",
+        ]},
+        { title: "Intern", org: "Suffolk County District Attorney's Office", location: "Hauppauge, NY", period: "Jun 2020 – Aug 2020", bullets: [
+          "Researched civil justice policy proposals and authored a policy proposal on the Prison Rape Elimination Act (PREA).",
+        ]},
+        { title: "Congressional Intern", org: "Office of Rep. Brad Sherman", location: "Washington, D.C.", period: "Aug 2019 – Dec 2019", bullets: [
+          "Researched South Asian policy issues, including the Kashmir crisis, and assisted with hearing logistics.",
+          "Managed the congressman's schedule, attended hearings, and supported constituents.",
+        ]},
+        { title: "National Program Intern", org: "Congressional Hunger Center", location: "Washington, D.C.", period: "Jan 2019 – May 2019", bullets: [
+          "Supported the Bill Emerson National Hunger Fellowship, overseeing the work of 25 fellows across the U.S.",
+          "Conducted comparative evaluations of D.C.-area food banks and anti-poverty policies.",
+        ]},
+      ];
+      return (
+        <section>
+          <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center gap-2"><Briefcase size={24} /> Experience</h2>
+          <div className="space-y-4">
+            {roles.map((r, i) => (
+              <div key={i} className="bg-white rounded-xl shadow-sm border border-emerald-100 p-6 hover:border-emerald-300 hover:shadow-md transition">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-baseline gap-1 mb-2">
+                  <div>
+                    <h3 className="font-bold text-blue-800">{r.title}</h3>
+                    <p className="text-sm text-emerald-700 font-medium">{r.org} · {r.location}</p>
+                  </div>
+                  <p className="text-xs text-slate-500 font-medium">{r.period}</p>
+                </div>
+                <ul className="mt-3 space-y-1.5 text-sm text-slate-600">
+                  {r.bullets.map((b, j) => <li key={j} className="flex gap-2"><span className="text-emerald-500 shrink-0 mt-1">▸</span><span>{b}</span></li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    function PublicationsSection() {
+      const pubs = [
+        { title: "The Human Right to Reparations: Principles, Provisions, and Pathways to Reparatory Justice for Africans and People of African Descent", venue: "American University Futures of Democracy, Tech & Human Rights Lab", year: "2025" },
+        { title: "Future of International Cooperation Report 2025 — Justice in Action: Beyond Promises to Progress", venue: "Stimson Center", year: "2025" },
+        { title: "Global Governance Innovation Report 2025 — Advancing the Pact for the Future and Environmental Governance", venue: "Stimson Center", year: "2025" },
+        { title: "Girls Left Behind: How Legal Gaps and Social Norms Sustain Child Marriage", venue: "Stimson Center", year: "2025" },
+        { title: "Why Are Child Marriage Rates Stagnant in the Caribbean and Latin America?", venue: "Inter-American Foundation (IAF)", year: "2024" },
+      ];
+      return (
+        <section>
+          <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center gap-2"><FileText size={24} /> Research & Publications</h2>
+          <div className="bg-white rounded-xl shadow-sm border border-emerald-100 divide-y divide-emerald-100">
+            {pubs.map((p, i) => (
+              <div key={i} className="p-5 hover:bg-emerald-50/30 transition">
+                <div className="flex items-start gap-4">
+                  <span className="font-mono text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold shrink-0 mt-0.5">{p.year}</span>
+                  <div>
+                    <h3 className="font-semibold text-slate-800 leading-snug">{p.title}</h3>
+                    <p className="text-sm text-emerald-700 mt-1">{p.venue}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    function ContactSection() {
+      return (
+        <section className="bg-white rounded-xl shadow-sm border border-emerald-100 p-8">
+          <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2"><Mail size={22} /> Contact</h2>
+          <div className="space-y-3 text-slate-700">
+            <p><span className="font-semibold text-blue-800">Email:</span> neermalapersaud25@gmail.com</p>
+            <p><span className="font-semibold text-blue-800">Phone:</span> (954) 947-9114</p>
+            <p><span className="font-semibold text-blue-800">Location:</span> Washington, D.C.</p>
+            <p className="pt-3 text-sm text-slate-500 italic">For research collaborations, speaking engagements, or press inquiries, email is the best way to reach me.</p>
+          </div>
+        </section>
+      );
+    }
+
+    function BlogSection({ posts, isOwner, isCreating, editingPost, draftTitle, draftBody, setDraftTitle, setDraftBody, startCreate, startEdit, cancelEdit, savePost, deletePost, selectedPost, setSelectedPost, formatDate }) {
+      if (selectedPost && !editingPost) {
+        return (
+          <article className="bg-white rounded-xl shadow-sm border border-emerald-100 p-8">
+            <button onClick={() => setSelectedPost(null)} className="text-sm text-blue-700 hover:text-emerald-600 mb-4 flex items-center gap-1">← Back to all posts</button>
+            <h2 className="text-3xl font-bold text-blue-800 mb-2">{selectedPost.title}</h2>
+            <p className="text-sm text-emerald-700 flex items-center gap-1 mb-6"><Calendar size={14} /> {formatDate(selectedPost.date)}</p>
+            <div className="max-w-none whitespace-pre-wrap text-slate-700 leading-relaxed">{selectedPost.body}</div>
+            {isOwner && (
+              <div className="mt-6 flex gap-2 border-t border-emerald-100 pt-4">
+                <button onClick={() => startEdit(selectedPost)} className="px-3 py-1.5 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800 flex items-center gap-1"><Edit2 size={14} /> Edit</button>
+                <button onClick={() => deletePost(selectedPost.id)} className="px-3 py-1.5 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center gap-1"><Trash2 size={14} /> Delete</button>
+              </div>
+            )}
+          </article>
+        );
+      }
+
+      if (isCreating || editingPost) {
+        return (
+          <section className="bg-white rounded-xl shadow-sm border-t-4 border-emerald-500 p-8">
+            <h2 className="text-xl font-bold text-blue-800 mb-4">{isCreating ? "New post" : "Edit post"}</h2>
+            <label className="block text-sm font-semibold text-slate-700 mb-1">Title</label>
+            <input type="text" value={draftTitle} onChange={e => setDraftTitle(e.target.value)} placeholder="Post title" className="w-full px-3 py-2 border border-slate-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label className="block text-sm font-semibold text-slate-700 mb-1">Body</label>
+            <textarea value={draftBody} onChange={e => setDraftBody(e.target.value)} placeholder="Write your post..." rows={12} className="w-full px-3 py-2 border border-slate-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y" />
+            <div className="flex gap-2">
+              <button onClick={savePost} disabled={!draftTitle.trim() || !draftBody.trim()} className="px-4 py-2 bg-gradient-to-r from-blue-700 to-emerald-600 text-white rounded-md font-semibold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"><Save size={16} /> {isCreating ? "Publish" : "Save changes"}</button>
+              <button onClick={cancelEdit} className="px-4 py-2 bg-slate-200 text-slate-700 rounded-md font-semibold hover:bg-slate-300">Cancel</button>
+            </div>
+          </section>
+        );
+      }
+
+      return (
+        <section>
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-blue-800">Notes from the Field</h2>
+              <p className="text-sm text-slate-500">Weekly reflections on migration, research, and the diaspora.</p>
+            </div>
+            {isOwner && <button onClick={startCreate} className="px-4 py-2 bg-gradient-to-r from-blue-700 to-emerald-600 text-white rounded-md font-semibold hover:opacity-90 flex items-center gap-1 shadow-sm"><Plus size={16} /> New post</button>}
+          </div>
+          {posts.length === 0 ? (
+            <div className="bg-white rounded-xl border border-emerald-100 p-8 text-center text-slate-500">No posts yet.{isOwner && " Click \"New post\" to publish the first one."}</div>
+          ) : (
+            <div className="space-y-4">
+              {posts.map(post => (
+                <article key={post.id} className="bg-white rounded-xl shadow-sm border border-emerald-100 hover:border-emerald-300 hover:shadow-md transition overflow-hidden">
+                  <div className="p-6">
+                    <button onClick={() => setSelectedPost(post)} className="text-left w-full group">
+                      <h3 className="text-xl font-bold text-blue-800 group-hover:text-emerald-700 transition">{post.title}</h3>
+                      <p className="text-xs text-emerald-700 flex items-center gap-1 mt-1 mb-3"><Calendar size={12} /> {formatDate(post.date)}</p>
+                      <p className="text-slate-600 line-clamp-3">{post.body}</p>
+                      <span className="text-sm text-blue-700 font-semibold mt-3 inline-flex items-center gap-1 group-hover:gap-2 transition-all">Read more <ChevronRight size={14} /></span>
+                    </button>
+                    {isOwner && (
+                      <div className="mt-4 pt-4 border-t border-emerald-100 flex gap-2">
+                        <button onClick={() => startEdit(post)} className="px-3 py-1 text-xs bg-blue-700 text-white rounded hover:bg-blue-800 flex items-center gap-1"><Edit2 size={12} /> Edit</button>
+                        <button onClick={() => deletePost(post.id)} className="px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-1"><Trash2 size={12} /> Delete</button>
+                      </div>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
