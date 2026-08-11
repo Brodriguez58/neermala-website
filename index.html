@@ -4,457 +4,685 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Neermala Persaud</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
-    body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-    .line-clamp-3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #f0fdf4 100%); color: #1e293b; min-height: 100vh; }
+
+    /* Top bar */
+    .topbar { border-bottom: 1px solid #d1fae5; background: rgba(255,255,255,0.7); backdrop-filter: blur(8px); }
+    .topbar-inner { max-width: 1152px; margin: 0 auto; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .social-links { display: flex; gap: 12px; }
+    .social-btn { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: opacity 0.2s; border: none; cursor: pointer; }
+    .social-btn:hover { opacity: 0.85; }
+    .social-btn.linkedin { background: #1d4ed8; }
+    .social-btn.mail { background: #059669; }
+    .social-btn.twitter { background: #2563eb; }
+    .owner-btn { font-size: 12px; color: #64748b; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: color 0.2s; }
+    .owner-btn:hover { color: #1d4ed8; }
+
+    /* Nav */
+    nav { background: white; border-bottom: 2px solid #10b981; box-shadow: 0 1px 3px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 40; }
+    .nav-inner { max-width: 1152px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; padding-top: 12px; padding-bottom: 12px; }
+    .tab-btn { padding: 8px 16px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; color: #475569; background: none; }
+    .tab-btn:hover { color: #1d4ed8; background: #f0fdf4; }
+    .tab-btn.active { background: linear-gradient(to right, #1d4ed8, #059669); color: white; box-shadow: 0 2px 8px rgba(29,78,216,0.3); }
+
+    /* Header */
+    header { max-width: 1152px; margin: 0 auto; padding: 40px 24px 24px; }
+    .header-inner { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+    @media (min-width: 768px) { .header-inner { flex-direction: row; } }
+    .profile-photo { width: 128px; height: 128px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 16px rgba(0,0,0,0.15); border: 4px solid white; flex-shrink: 0; }
+    .header-text { text-align: center; }
+    @media (min-width: 768px) { .header-text { text-align: left; } }
+    .name { font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .name-n, .name-p { color: #1d4ed8; }
+    .name-rest { color: #1e293b; }
+    .affiliation { margin-top: 6px; font-size: 15px; color: #059669; font-weight: 600; letter-spacing: 0.08em; }
+    .tagline { margin-top: 4px; font-size: 13px; color: #94a3b8; font-style: italic; }
+
+    /* Main */
+    main { max-width: 1152px; margin: 0 auto; padding: 0 24px 64px; }
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Cards */
+    .card { background: white; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #d1fae5; padding: 32px; }
+    .card + .card { margin-top: 16px; }
+    .card-hover { transition: box-shadow 0.2s, border-color 0.2s; }
+    .card-hover:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: #6ee7b7; }
+
+    /* Section headings */
+    .section-title { font-size: 22px; font-weight: 700; color: #1e3a8a; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
+    .section-title svg { color: #1d4ed8; }
+
+    /* About */
+    .bio-text p { color: #475569; line-height: 1.75; }
+    .bio-text p + p { margin-top: 16px; }
+    .highlight-green { color: #047857; font-weight: 600; }
+    .highlight-blue { color: #1e3a8a; font-weight: 600; }
+    .info-grid { display: grid; gap: 16px; margin-top: 24px; }
+    @media (min-width: 768px) { .info-grid { grid-template-columns: repeat(3, 1fr); } }
+    .info-card { background: white; border-radius: 12px; border: 1px solid #d1fae5; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .info-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .info-icon { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, #2563eb, #10b981); display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
+    .info-card h3 { font-size: 11px; font-weight: 700; color: #1e3a8a; letter-spacing: 0.08em; text-transform: uppercase; }
+    .info-card ul { list-style: none; }
+    .info-card li { font-size: 13px; color: #475569; padding: 2px 0; }
+
+    /* Research */
+    .research-grid { display: grid; gap: 16px; }
+    @media (min-width: 768px) { .research-grid { grid-template-columns: repeat(2, 1fr); } }
+    .research-card { background: white; border-radius: 12px; border: 1px solid #d1fae5; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: box-shadow 0.2s, border-color 0.2s; }
+    .research-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: #6ee7b7; }
+    .research-card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+    .research-icon { width: 40px; height: 40px; border-radius: 8px; background: linear-gradient(135deg, #2563eb, #10b981); display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0; }
+    .research-card h3 { font-weight: 700; color: #1e3a8a; line-height: 1.3; font-size: 15px; }
+    .research-card .period { font-size: 12px; color: #059669; margin-top: 2px; }
+    .research-card p { font-size: 13px; color: #475569; line-height: 1.6; margin-top: 8px; }
+
+    /* Experience */
+    .exp-card { background: white; border-radius: 12px; border: 1px solid #d1fae5; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: box-shadow 0.2s, border-color 0.2s; }
+    .exp-card + .exp-card { margin-top: 16px; }
+    .exp-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: #6ee7b7; }
+    .exp-header { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+    @media (min-width: 768px) { .exp-header { flex-direction: row; justify-content: space-between; align-items: baseline; } }
+    .exp-title { font-weight: 700; color: #1e3a8a; font-size: 15px; }
+    .exp-org { font-size: 13px; color: #059669; font-weight: 500; margin-top: 2px; }
+    .exp-period { font-size: 12px; color: #94a3b8; font-weight: 500; white-space: nowrap; }
+    .exp-bullets { list-style: none; margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+    .exp-bullets li { display: flex; gap: 8px; font-size: 13px; color: #475569; line-height: 1.5; }
+    .bullet-arrow { color: #10b981; flex-shrink: 0; margin-top: 2px; }
+
+    /* Publications */
+    .pub-list { background: white; border-radius: 12px; border: 1px solid #d1fae5; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; }
+    .pub-item { padding: 20px; display: flex; gap: 16px; align-items: flex-start; border-bottom: 1px solid #d1fae5; transition: background 0.2s; }
+    .pub-item:last-child { border-bottom: none; }
+    .pub-item:hover { background: rgba(240,253,244,0.4); }
+    .pub-year { font-family: monospace; font-size: 12px; background: #dbeafe; color: #1e3a8a; padding: 3px 8px; border-radius: 4px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+    .pub-title { font-weight: 600; color: #1e293b; line-height: 1.4; font-size: 14px; }
+    .pub-venue { font-size: 13px; color: #059669; margin-top: 4px; }
+
+    /* Contact */
+    .contact-row { color: #475569; padding: 6px 0; font-size: 15px; }
+    .contact-label { font-weight: 600; color: #1e3a8a; }
+    .contact-note { margin-top: 16px; font-size: 13px; color: #94a3b8; font-style: italic; }
+
+    /* Blog */
+    .blog-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .blog-title-group h2 { font-size: 22px; font-weight: 700; color: #1e3a8a; }
+    .blog-title-group p { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+    .new-post-btn { padding: 8px 16px; background: linear-gradient(to right, #1d4ed8, #059669); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(29,78,216,0.25); }
+    .new-post-btn:hover { opacity: 0.9; }
+    .post-card { background: white; border-radius: 12px; border: 1px solid #d1fae5; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: box-shadow 0.2s, border-color 0.2s; margin-bottom: 16px; }
+    .post-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: #6ee7b7; }
+    .post-title-btn { font-size: 18px; font-weight: 700; color: #1e3a8a; cursor: pointer; background: none; border: none; text-align: left; padding: 0; transition: color 0.2s; }
+    .post-title-btn:hover { color: #059669; }
+    .post-date { font-size: 12px; color: #059669; margin-top: 4px; margin-bottom: 12px; display: flex; align-items: center; gap: 4px; }
+    .post-excerpt { color: #475569; font-size: 14px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .read-more { font-size: 13px; color: #1d4ed8; font-weight: 600; margin-top: 12px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; background: none; border: none; padding: 0; }
+    .post-actions { display: flex; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #d1fae5; }
+    .btn-edit { padding: 5px 12px; font-size: 12px; background: #1d4ed8; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .btn-edit:hover { background: #1e40af; }
+    .btn-delete { padding: 5px 12px; font-size: 12px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .btn-delete:hover { background: #b91c1c; }
+
+    /* Blog editor */
+    .editor-card { background: white; border-radius: 12px; border-top: 4px solid #10b981; padding: 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .editor-card h2 { font-size: 18px; font-weight: 700; color: #1e3a8a; margin-bottom: 16px; }
+    .field-label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 4px; }
+    .field-input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; margin-bottom: 16px; outline: none; font-family: inherit; }
+    .field-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+    textarea.field-input { resize: vertical; min-height: 240px; }
+    .editor-actions { display: flex; gap: 8px; }
+    .btn-publish { padding: 8px 20px; background: linear-gradient(to right, #1d4ed8, #059669); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-publish:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-cancel { padding: 8px 20px; background: #e2e8f0; color: #475569; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .btn-cancel:hover { background: #cbd5e1; }
+
+    /* Full post view */
+    .post-full { background: white; border-radius: 12px; border: 1px solid #d1fae5; padding: 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .back-btn { font-size: 13px; color: #1d4ed8; background: none; border: none; cursor: pointer; margin-bottom: 16px; display: flex; align-items: center; gap: 4px; }
+    .back-btn:hover { color: #059669; }
+    .post-full h2 { font-size: 26px; font-weight: 700; color: #1e3a8a; margin-bottom: 8px; }
+    .post-full-body { color: #475569; line-height: 1.75; white-space: pre-wrap; margin-top: 24px; font-size: 15px; }
+
+    /* Footer */
+    footer { background: linear-gradient(to right, #1e3a8a, #047857); color: white; padding: 32px 24px; margin-top: 32px; }
+    .footer-inner { max-width: 1152px; margin: 0 auto; text-align: center; }
+    .footer-links { display: flex; justify-content: center; gap: 16px; margin-bottom: 12px; }
+    .footer-copy { font-size: 13px; color: rgba(255,255,255,0.7); }
+
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+    .modal { background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); padding: 24px; width: 100%; max-width: 360px; border-top: 4px solid #10b981; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-header h3 { font-size: 17px; font-weight: 700; color: #1e3a8a; display: flex; align-items: center; gap: 6px; }
+    .modal-close { background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 20px; line-height: 1; }
+    .modal-close:hover { color: #475569; }
+    .modal-note { font-size: 12px; color: #94a3b8; margin-bottom: 10px; }
+    .modal-note code { background: #f0fdf4; color: #059669; padding: 1px 4px; border-radius: 3px; }
+    .pw-input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
+    .pw-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+    .login-error { color: #dc2626; font-size: 12px; margin-top: 6px; }
+    .btn-signin { width: 100%; margin-top: 12px; padding: 10px; background: linear-gradient(to right, #1d4ed8, #059669); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 15px; cursor: pointer; }
+    .btn-signin:hover { opacity: 0.9; }
+
+    /* SVG icons */
+    svg { display: inline-block; vertical-align: middle; flex-shrink: 0; }
   </style>
 </head>
 <body>
-  <div id="root"></div>
 
-  <script type="text/babel" data-presets="env,react">
-    const { useState, useEffect } = React;
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/neermalapersaud" target="_blank" rel="noopener noreferrer" class="social-btn linkedin" title="LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <a href="mailto:neermalapersaud25@gmail.com" class="social-btn mail" title="Email">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+        </a>
+        <a href="https://x.com/neermalapersaud" target="_blank" rel="noopener noreferrer" class="social-btn twitter" title="X / Twitter">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+        </a>
+      </div>
+      <button class="owner-btn" id="ownerBtn" onclick="toggleOwner()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Owner login
+      </button>
+    </div>
+  </div>
 
-    // Simple inline SVG icons (replacing lucide-react)
-    const Icon = ({ path, size = 16 }) => (
-      <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
-        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        {path}
-      </svg>
-    );
-    const Linkedin = (p) => <Icon {...p} path={<><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></>} />;
-    const Mail = (p) => <Icon {...p} path={<><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></>} />;
-    const Twitter = (p) => <Icon {...p} path={<path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>} />;
-    const Lock = (p) => <Icon {...p} path={<><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>} />;
-    const X = (p) => <Icon {...p} path={<><path d="M18 6 6 18"/><path d="m6 6 12 12"/></>} />;
-    const Plus = (p) => <Icon {...p} path={<><path d="M5 12h14"/><path d="M12 5v14"/></>} />;
-    const Edit2 = (p) => <Icon {...p} path={<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>} />;
-    const Trash2 = (p) => <Icon {...p} path={<><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></>} />;
-    const Save = (p) => <Icon {...p} path={<><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></>} />;
-    const Calendar = (p) => <Icon {...p} path={<><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></>} />;
-    const ChevronRight = (p) => <Icon {...p} path={<polyline points="9 18 15 12 9 6"/>} />;
-    const Sparkles = (p) => <Icon {...p} path={<path d="M12 3l1.9 5.8L20 11l-5.8 2.1L12 19l-2.1-5.9L4 11l5.9-2.2Z"/>} />;
-    const BookOpen = (p) => <Icon {...p} path={<><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>} />;
-    const Briefcase = (p) => <Icon {...p} path={<><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></>} />;
-    const FileText = (p) => <Icon {...p} path={<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></>} />;
-    const GraduationCap = (p) => <Icon {...p} path={<><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></>} />;
-    const Languages = (p) => <Icon {...p} path={<><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></>} />;
-    const Cpu = (p) => <Icon {...p} path={<><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="4"/><line x1="15" y1="2" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="22"/><line x1="15" y1="20" x2="15" y2="22"/><line x1="20" y1="9" x2="22" y2="9"/><line x1="20" y1="15" x2="22" y2="15"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="2" y1="15" x2="4" y2="15"/></>} />;
-    const Globe = (p) => <Icon {...p} path={<><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></>} />;
-    const Users = (p) => <Icon {...p} path={<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></>} />;
-    const Heart = (p) => <Icon {...p} path={<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>} />;
-    const Scale = (p) => <Icon {...p} path={<><path d="m16 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/><path d="m2 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></>} />;
+  <!-- Nav -->
+  <nav>
+    <div class="nav-inner">
+      <button class="tab-btn active" onclick="showTab('about')">ABOUT</button>
+      <button class="tab-btn" onclick="showTab('research')">RESEARCH</button>
+      <button class="tab-btn" onclick="showTab('experience')">EXPERIENCE</button>
+      <button class="tab-btn" onclick="showTab('publications')">PUBLICATIONS</button>
+      <button class="tab-btn" onclick="showTab('blog')">BLOG</button>
+      <button class="tab-btn" onclick="showTab('contact')">CONTACT</button>
+    </div>
+  </nav>
 
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <img src="Neermala-Headshot.PNG" alt="Neermala Persaud" class="profile-photo" />
+      <div class="header-text">
+        <h1 class="name">
+          <span class="name-n">N</span><span class="name-rest">EERMALA </span><span class="name-p">P</span><span class="name-rest">ERSAUD</span>
+        </h1>
+        <p class="affiliation">AMERICAN UNIVERSITY · SCHOOL OF INTERNATIONAL SERVICE</p>
+        <p class="tagline">Ethics, Peace &amp; Human Rights · Migration · Policy</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main>
+
+    <!-- ABOUT -->
+    <div id="tab-about" class="section active">
+      <div class="card">
+        <h2 class="section-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-5.8 2.1L12 19l-2.1-5.9L4 11l5.9-2.2Z"/></svg>
+          Bio
+        </h2>
+        <div class="bio-text">
+          <p>I'm a researcher, policy analyst, and human rights practitioner working at the intersection of <span class="highlight-green">migration, peace and conflict resolution, and diaspora identity</span>. I'm completing my M.A. in Ethics, Peace, and Human Rights at American University's School of International Service, with a concentration in Peace and Conflict Resolution and a Certificate in Global Migration.</p>
+          <p>I currently serve as a <span class="highlight-blue">Fellow at the Stimson Center</span>, where I help lead planning for the 2026 T-20 conference and co-author flagship reports on global governance innovation, climate financing, peacekeeping, and the future of international cooperation. I'm also the <span class="highlight-blue">Director of Women, Peace and Security (WPS) at American University</span>, where I've built a community of students across the DMV committed to advancing the WPS agenda.</p>
+          <p>My research spans continents and methodologies. Most recently, I conducted independent field research in Guyana with Indo-Guyanese, Afro-Guyanese, and Indigenous communities, exploring how cultural practices are preserved across generations in the face of displacement. I contribute to the Roti Collective Lab, using ethnography and ArcGIS to trace how culinary traditions carry migration stories, and to the Mass Atrocity Research Initiative (MARI), where I study early warning indicators and social resilience.</p>
+          <p>Before graduate school, I spent nearly three years as an Immigration Analyst at VisaNation Law Group, reviewing family- and employment-based petitions and helping design client-facing tools to improve access to legal services. My earlier experience includes the National Immigrant Women's Advocacy Project, the Suffolk County DA's Office, and the U.S. Congress. I speak Guyanese Creole fluently and intermediate Spanish.</p>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </div>
+            <h3>Education</h3>
+          </div>
+          <ul><li>M.A., American University (2026)</li><li>B.A., Political Science (2021)</li></ul>
+        </div>
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+            </div>
+            <h3>Languages</h3>
+          </div>
+          <ul><li>English</li><li>Guyanese Creole (Fluent)</li><li>Spanish (Intermediate)</li></ul>
+        </div>
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="4"/><line x1="15" y1="2" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="22"/><line x1="15" y1="20" x2="15" y2="22"/><line x1="20" y1="9" x2="22" y2="9"/><line x1="20" y1="15" x2="22" y2="15"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="2" y1="15" x2="4" y2="15"/></svg>
+            </div>
+            <h3>Technical</h3>
+          </div>
+          <ul><li>SQL · STATA · R · NVivo</li><li>Tableau · Power BI · ArcGIS</li><li>Figma · Salesforce · Airtable</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESEARCH -->
+    <div id="tab-research" class="section">
+      <h2 class="section-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Research
+      </h2>
+      <div class="research-grid">
+        <div class="research-card">
+          <div class="research-card-header">
+            <div class="research-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div>
+              <h3>Independent Field Research, Guyana</h3>
+              <p class="period">Dec 2025</p>
+            </div>
+          </div>
+          <p>Interviewed Indo-Guyanese, Afro-Guyanese, and Indigenous communities in Georgetown and Berbice on how cultural practices are preserved and how families cope with displacement across generations. Produced qualitative analysis of social resilience and identity preservation.</p>
+        </div>
+        <div class="research-card">
+          <div class="research-card-header">
+            <div class="research-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            </div>
+            <div>
+              <h3>Roti Collective Lab (Prof. Durrani)</h3>
+              <p class="period">Oct 2025 – Present</p>
+            </div>
+          </div>
+          <p>Ethnographic research on roti-making as a thread connecting migration experiences across the diaspora. Uses ArcGIS to visually document and share narratives of culinary heritage.</p>
+        </div>
+        <div class="research-card">
+          <div class="research-card-header">
+            <div class="research-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/><path d="m2 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+            </div>
+            <div>
+              <h3>Mass Atrocity Research Initiative (MARI)</h3>
+              <p class="period">Oct 2024 – Present</p>
+            </div>
+          </div>
+          <p>Research on early warning indicators, policy engagement, and social resilience efforts. Includes analysis of how mass atrocity and genocide are taught in U.S. secondary education curricula.</p>
+        </div>
+        <div class="research-card">
+          <div class="research-card-header">
+            <div class="research-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+            </div>
+            <div>
+              <h3>Stimson Center Fellowship</h3>
+              <p class="period">Jan 2025 – Present</p>
+            </div>
+          </div>
+          <p>Leading consultations with think tank stakeholders for the 2026 T-20 conference. Research on migration, climate financing, and peacekeeping, with co-authorship on the GGIR'25 and FIC'25 reports. Partnering with the Savannah Centre on the ANUMDI and ACUNS Annual Meeting in Nairobi.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div id="tab-experience" class="section">
+      <h2 class="section-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Experience
+      </h2>
+      <div class="exp-card">
+        <div class="exp-header"><div><div class="exp-title">Fellow</div><div class="exp-org">Stimson Center · Washington, D.C.</div></div><div class="exp-period">Jan 2025 – Present</div></div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow">▸</span><span>Planning the 2026 annual T-20 conference and leading consultations with think tank stakeholders.</span></li>
+          <li><span class="bullet-arrow">▸</span><span>Researching migration, climate financing, and peacekeeping; co-authoring GGIR'25 and FIC'25 reports.</span></li>
+          <li><span class="bullet-arrow">▸</span><span>Led planning committee meetings with Nigerian partners at the Savannah Centre for the ANUMDI and ACUNS Annual Meeting in Nairobi.</span></li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header"><div><div class="exp-title">Director, Women, Peace and Security (WPS)</div><div class="exp-org">American University · Washington, D.C.</div></div><div class="exp-period">Sep 2024 – Present</div></div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow">▸</span><span>Plan events (networking, panels, social), manage communications, and build a DMV-wide community of students advancing the WPS agenda.</span></li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header"><div><div class="exp-title">Immigration Analyst</div><div class="exp-org">VisaNation Law Group · Fort Lauderdale, FL</div></div><div class="exp-period">Feb 2023 – Dec 2025</div></div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow">▸</span><span>Ensured USCIS compliance through regular internal audits.</span></li>
+          <li><span class="bullet-arrow">▸</span><span>Conducted UI/UX testing on custom family immigration software to identify and implement improvements.</span></li>
+          <li><span class="bullet-arrow">▸</span><span>Used CRM/CMS systems to automate workflows and extract data supporting CEO decision-making.</span></li>
+          <li><span class="bullet-arrow">▸</span><span>Designed a new client-facing program to improve intake and client-legal team communication.</span></li>
+          <li><span class="bullet-arrow">▸</span><span>Reviewed family and employment petitions, including I-130, I-485, I-765, I-864, and I-129 forms.</span></li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header"><div><div class="exp-title">Key Leader</div><div class="exp-org">Lululemon · Sunrise, FL</div></div><div class="exp-period">Dec 2021 – Dec 2022</div></div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow">▸</span><span>Educated guests on product features and made tailored recommendations, contributing to a 15% sales increase during peak seasons.</span></li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header"><div><div class="exp-title">Legal Secretary</div><div class="exp-org">Mukerjee Law Group, P.A. · Coral Springs, FL</div></div><div class="exp-period">Aug 2021 – Sep 2022</div></div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow">▸</span><span>Prepared and submitted complaints, motions, and notices to Florida courts on behalf of plaintiffs.</span></li>
+          <li><span class="bullet-arrow">▸</span><span>Managed attorney calendar, retrieved medical records, and facilitated client communication.</span></li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header"><div><div class="exp-title">Legal Intern</div><div class="exp-org">National Immigrant Women's Advocacy Project · Washington, D.C.</div></div><div class="exp-period">Oct 2020 – May 2021</div></div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow">▸</span><span>Created toolkits on U-visa, T-visa, VAWA, Asylum, and H-1B processes, plus training materials on DV/SA.</span></li>
+          <li><span class="bullet-arrow">▸</span><span>Analyzed survivor intake procedures and staffed the hotline, connecting survivors with legal assistance.</span></li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header"><div><div class="exp-title">Interfaith Fellow</div><div class="exp-org">American University · Washington, D.C.</div></div><div class="exp-period">Aug 2019 – May 2021</div></div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow">▸</span><span>Managed social media, newsletters, and events for interfaith projects; provided orientations and campus support.</span></li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header"><div><div class="exp-title">Intern</div><div class="exp-org">Suffolk County District Attorney's Office · Hauppauge, NY</div></div><div class="exp-period">Jun 2020 – Aug 2020</div></div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow">▸</span><span>Researched civil justice policy proposals and authored a policy proposal on the Prison Rape Elimination Act (PREA).</span></li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header"><div><div class="exp-title">Congressional Intern</div><div class="exp-org">Office of Rep. Brad Sherman · Washington, D.C.</div></div><div class="exp-period">Aug 2019 – Dec 2019</div></div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow">▸</span><span>Researched South Asian policy issues, including the Kashmir crisis, and assisted with hearing logistics.</span></li>
+          <li><span class="bullet-arrow">▸</span><span>Managed the congressman's schedule, attended hearings, and supported constituents.</span></li>
+        </ul>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header"><div><div class="exp-title">National Program Intern</div><div class="exp-org">Congressional Hunger Center · Washington, D.C.</div></div><div class="exp-period">Jan 2019 – May 2019</div></div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow">▸</span><span>Supported the Bill Emerson National Hunger Fellowship, overseeing the work of 25 fellows across the U.S.</span></li>
+          <li><span class="bullet-arrow">▸</span><span>Conducted comparative evaluations of D.C.-area food banks and anti-poverty policies.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PUBLICATIONS -->
+    <div id="tab-publications" class="section">
+      <h2 class="section-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Research &amp; Publications
+      </h2>
+      <div class="pub-list">
+        <div class="pub-item">
+          <span class="pub-year">2025</span>
+          <div><div class="pub-title">The Human Right to Reparations: Principles, Provisions, and Pathways to Reparatory Justice for Africans and People of African Descent</div><div class="pub-venue">American University Futures of Democracy, Tech &amp; Human Rights Lab</div></div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-year">2025</span>
+          <div><div class="pub-title">Future of International Cooperation Report 2025 — Justice in Action: Beyond Promises to Progress</div><div class="pub-venue">Stimson Center</div></div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-year">2025</span>
+          <div><div class="pub-title">Global Governance Innovation Report 2025 — Advancing the Pact for the Future and Environmental Governance</div><div class="pub-venue">Stimson Center</div></div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-year">2025</span>
+          <div><div class="pub-title">Girls Left Behind: How Legal Gaps and Social Norms Sustain Child Marriage</div><div class="pub-venue">Stimson Center</div></div>
+        </div>
+        <div class="pub-item">
+          <span class="pub-year">2024</span>
+          <div><div class="pub-title">Why Are Child Marriage Rates Stagnant in the Caribbean and Latin America?</div><div class="pub-venue">Inter-American Foundation (IAF)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOG -->
+    <div id="tab-blog" class="section">
+      <div class="blog-header">
+        <div class="blog-title-group">
+          <h2>Notes from the Field</h2>
+          <p>Weekly reflections on migration, research, and the diaspora.</p>
+        </div>
+        <button class="new-post-btn" id="newPostBtn" style="display:none" onclick="startCreate()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          New post
+        </button>
+      </div>
+      <div id="blogContent"></div>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="tab-contact" class="section">
+      <div class="card">
+        <h2 class="section-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+          Contact
+        </h2>
+        <div class="contact-row"><span class="contact-label">Email:</span> neermalapersaud25@gmail.com</div>
+        <div class="contact-row"><span class="contact-label">Location:</span> Washington, D.C.</div>
+        <p class="contact-note">For research collaborations, speaking engagements, or press inquiries, email is the best way to reach me.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/neermalapersaud" target="_blank" rel="noopener noreferrer" class="social-btn linkedin" title="LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <a href="mailto:neermalapersaud25@gmail.com" class="social-btn mail" title="Email">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+        </a>
+        <a href="https://x.com/neermalapersaud" target="_blank" rel="noopener noreferrer" class="social-btn twitter" title="X / Twitter">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+        </a>
+      </div>
+      <p class="footer-copy">© 2026 Neermala Persaud. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div class="modal-overlay" id="loginModal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Owner Login
+        </h3>
+        <button class="modal-close" onclick="closeLogin()">&times;</button>
+      </div>
+      <p class="modal-note">Demo password: <code>owner2026</code></p>
+      <input type="password" class="pw-input" id="pwInput" placeholder="Enter password" onkeydown="if(event.key==='Enter') doLogin()" />
+      <p class="login-error" id="loginError" style="display:none">Incorrect password</p>
+      <button class="btn-signin" onclick="doLogin()">Sign in</button>
+    </div>
+  </div>
+
+  <script>
     const STORAGE_KEY = "neermala_blog_posts_v1";
     const OWNER_PASSWORD = "owner2026";
+    let isOwner = false;
+    let posts = [];
+    let selectedPost = null;
+    let editingPostId = null;
+    let isCreating = false;
 
-    function App() {
-      const [activeTab, setActiveTab] = useState("about");
-      const [posts, setPosts] = useState([]);
-      const [isOwner, setIsOwner] = useState(false);
-      const [showLogin, setShowLogin] = useState(false);
-      const [password, setPassword] = useState("");
-      const [loginError, setLoginError] = useState("");
-      const [editingPost, setEditingPost] = useState(null);
-      const [isCreating, setIsCreating] = useState(false);
-      const [draftTitle, setDraftTitle] = useState("");
-      const [draftBody, setDraftBody] = useState("");
-      const [selectedPost, setSelectedPost] = useState(null);
+    // Init posts
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        posts = JSON.parse(saved);
+      } else {
+        posts = [{ id: "post-welcome", title: "Welcome — Notes from the Field", body: "This blog is where I share reflections on migration, human rights, and the quiet work of building community across borders. Expect weekly updates from research trips, conferences, and the people whose stories shape the work. Thanks for reading.", date: new Date().toISOString() }];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+      }
+    } catch(e) {}
 
-      useEffect(() => {
-        try {
-          const saved = localStorage.getItem(STORAGE_KEY);
-          if (saved) {
-            setPosts(JSON.parse(saved));
-          } else {
-            const seed = [{
-              id: "post-welcome",
-              title: "Welcome — Notes from the Field",
-              body: "This blog is where I share reflections on migration, human rights, and the quiet work of building community across borders. Expect weekly updates from research trips, conferences, and the people whose stories shape the work. Thanks for reading.",
-              date: new Date().toISOString(),
-            }];
-            setPosts(seed);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
-          }
-        } catch (e) { console.error(e); }
-      }, []);
+    function savePosts() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(posts)); } catch(e) {}
+    }
 
-      const savePosts = (next) => {
-        setPosts(next);
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) { console.error(e); }
-      };
+    function formatDate(iso) {
+      return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    }
 
-      const handleLogin = () => {
-        if (password === OWNER_PASSWORD) {
-          setIsOwner(true); setShowLogin(false); setPassword(""); setLoginError("");
-        } else {
-          setLoginError("Incorrect password");
-        }
-      };
+    function showTab(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      event.target.classList.add('active');
+      if (id === 'blog') { selectedPost = null; editingPostId = null; isCreating = false; renderBlog(); }
+    }
 
-      const startCreate = () => { setIsCreating(true); setEditingPost(null); setDraftTitle(""); setDraftBody(""); };
-      const startEdit = (p) => { setEditingPost(p.id); setIsCreating(false); setDraftTitle(p.title); setDraftBody(p.body); };
-      const cancelEdit = () => { setEditingPost(null); setIsCreating(false); setDraftTitle(""); setDraftBody(""); };
-      const savePost = () => {
-        if (!draftTitle.trim() || !draftBody.trim()) return;
-        if (isCreating) {
-          savePosts([{ id: "post-" + Date.now(), title: draftTitle.trim(), body: draftBody.trim(), date: new Date().toISOString() }, ...posts]);
-        } else if (editingPost) {
-          savePosts(posts.map(p => p.id === editingPost ? { ...p, title: draftTitle.trim(), body: draftBody.trim() } : p));
-        }
-        cancelEdit();
-      };
-      const deletePost = (id) => {
-        if (!confirm("Delete this post?")) return;
-        savePosts(posts.filter(p => p.id !== id));
-        if (selectedPost?.id === id) setSelectedPost(null);
-      };
+    function toggleOwner() {
+      if (isOwner) {
+        isOwner = false;
+        document.getElementById('ownerBtn').innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Owner login';
+        document.getElementById('newPostBtn').style.display = 'none';
+        renderBlog();
+      } else {
+        document.getElementById('loginModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('pwInput').focus(), 50);
+      }
+    }
 
-      const formatDate = (iso) => new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    function closeLogin() {
+      document.getElementById('loginModal').style.display = 'none';
+      document.getElementById('pwInput').value = '';
+      document.getElementById('loginError').style.display = 'none';
+    }
 
-      const tabs = [
-        { id: "about", label: "ABOUT" },
-        { id: "research", label: "RESEARCH" },
-        { id: "experience", label: "EXPERIENCE" },
-        { id: "publications", label: "PUBLICATIONS" },
-        { id: "blog", label: "BLOG" },
-        { id: "contact", label: "CONTACT" },
-      ];
+    function doLogin() {
+      const pw = document.getElementById('pwInput').value;
+      if (pw === OWNER_PASSWORD) {
+        isOwner = true;
+        closeLogin();
+        document.getElementById('ownerBtn').innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Sign out';
+        document.getElementById('newPostBtn').style.display = 'flex';
+        renderBlog();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
 
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-emerald-50 text-slate-800">
-          <div className="border-b border-emerald-100 bg-white/70 backdrop-blur">
-            <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
-              <div className="flex gap-3">
-                <a href="https://www.linkedin.com/in/neermalapersaud" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-blue-700 hover:bg-blue-800 flex items-center justify-center text-white transition cursor-pointer"><Linkedin size={16} /></a>
-                <a className="w-8 h-8 rounded-full bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center text-white transition cursor-pointer"><Mail size={16} /></a>
-                <a href="https://x.com/neermalapersaud" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center text-white transition cursor-pointer"><Twitter size={16} /></a>
-              </div>
-              <button onClick={() => isOwner ? setIsOwner(false) : setShowLogin(true)} className="text-xs text-slate-500 hover:text-blue-700 flex items-center gap-1 transition">
-                <Lock size={12} />{isOwner ? "Sign out" : "Owner login"}
+    function startCreate() {
+      isCreating = true; editingPostId = null; selectedPost = null;
+      renderBlog();
+    }
+
+    function startEdit(id) {
+      editingPostId = id; isCreating = false; selectedPost = null;
+      renderBlog();
+    }
+
+    function cancelEdit() {
+      editingPostId = null; isCreating = false;
+      renderBlog();
+    }
+
+    function savePost() {
+      const title = document.getElementById('draftTitle').value.trim();
+      const body = document.getElementById('draftBody').value.trim();
+      if (!title || !body) return;
+      if (isCreating) {
+        posts.unshift({ id: 'post-' + Date.now(), title, body, date: new Date().toISOString() });
+      } else if (editingPostId) {
+        posts = posts.map(p => p.id === editingPostId ? { ...p, title, body } : p);
+      }
+      savePosts();
+      editingPostId = null; isCreating = false;
+      renderBlog();
+    }
+
+    function deletePost(id) {
+      if (!confirm('Delete this post?')) return;
+      posts = posts.filter(p => p.id !== id);
+      savePosts();
+      if (selectedPost && selectedPost.id === id) selectedPost = null;
+      renderBlog();
+    }
+
+    function viewPost(id) {
+      selectedPost = posts.find(p => p.id === id);
+      renderBlog();
+    }
+
+    function renderBlog() {
+      const container = document.getElementById('blogContent');
+
+      if (isCreating || editingPostId) {
+        const post = editingPostId ? posts.find(p => p.id === editingPostId) : null;
+        container.innerHTML = `
+          <div class="editor-card">
+            <h2>${isCreating ? 'New post' : 'Edit post'}</h2>
+            <label class="field-label">Title</label>
+            <input type="text" class="field-input" id="draftTitle" placeholder="Post title" value="${post ? escHtml(post.title) : ''}" />
+            <label class="field-label">Body</label>
+            <textarea class="field-input" id="draftBody" placeholder="Write your post...">${post ? escHtml(post.body) : ''}</textarea>
+            <div class="editor-actions">
+              <button class="btn-publish" onclick="savePost()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                ${isCreating ? 'Publish' : 'Save changes'}
               </button>
+              <button class="btn-cancel" onclick="cancelEdit()">Cancel</button>
             </div>
-          </div>
-
-          <nav className="bg-white border-b-2 border-emerald-500 shadow-sm sticky top-0 z-40">
-            <div className="max-w-6xl mx-auto px-6">
-              <div className="flex flex-wrap justify-center gap-1 py-3">
-                {tabs.map(tab => (
-                  <button key={tab.id} onClick={() => { setActiveTab(tab.id); setSelectedPost(null); }}
-                    className={`px-4 py-2 text-sm font-semibold tracking-wide rounded-md transition ${activeTab === tab.id ? "bg-gradient-to-r from-blue-700 to-emerald-600 text-white shadow-md" : "text-slate-700 hover:text-blue-700 hover:bg-emerald-50"}`}>
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </nav>
-
-          <header className="max-w-6xl mx-auto px-6 pt-10 pb-6">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <img src="Neermala-Headshot.PNG" alt="Neermala Persaud" className="w-32 h-32 rounded-full object-cover shadow-lg ring-4 ring-white" />
-              <div className="text-center md:text-left">
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-                  <span className="text-blue-800">N</span><span className="text-slate-800">EERMALA </span>
-                  <span className="text-blue-800">P</span><span className="text-slate-800">ERSAUD</span>
-                </h1>
-                <p className="mt-1 text-lg text-emerald-700 font-medium tracking-wider">AMERICAN UNIVERSITY · SCHOOL OF INTERNATIONAL SERVICE</p>
-                <p className="mt-1 text-sm text-slate-500 italic">Ethics, Peace & Human Rights · Migration · Policy</p>
-              </div>
-            </div>
-          </header>
-
-          <main className="max-w-6xl mx-auto px-6 pb-16">
-            {activeTab === "about" && <AboutSection />}
-            {activeTab === "research" && <ResearchSection />}
-            {activeTab === "experience" && <ExperienceSection />}
-            {activeTab === "publications" && <PublicationsSection />}
-            {activeTab === "contact" && <ContactSection />}
-            {activeTab === "blog" && <BlogSection {...{ posts, isOwner, isCreating, editingPost, draftTitle, draftBody, setDraftTitle, setDraftBody, startCreate, startEdit, cancelEdit, savePost, deletePost, selectedPost, setSelectedPost, formatDate }} />}
-          </main>
-
-          <footer className="bg-gradient-to-r from-blue-800 to-emerald-700 text-white py-8 mt-8">
-            <div className="max-w-6xl mx-auto px-6 text-center">
-              <div className="flex justify-center gap-4 mb-3">
-                <a href="https://www.linkedin.com/in/neermalapersaud" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition cursor-pointer"><Linkedin size={16} /></a>
-                <a className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition cursor-pointer"><Mail size={16} /></a>
-                <a href="https://x.com/neermalapersaud" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition cursor-pointer"><Twitter size={16} /></a>
-              </div>
-              <p className="text-sm text-white/80">© 2026 Neermala Persaud. All rights reserved.</p>
-            </div>
-          </footer>
-
-          {showLogin && (
-            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-              <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm border-t-4 border-emerald-500">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-bold text-blue-800 flex items-center gap-2"><Lock size={18} /> Owner Login</h3>
-                  <button onClick={() => { setShowLogin(false); setLoginError(""); setPassword(""); }} className="text-slate-400 hover:text-slate-700"><X size={20} /></button>
-                </div>
-                <p className="text-xs text-slate-500 mb-3">Demo password: <code className="bg-emerald-50 px-1 rounded text-emerald-700">owner2026</code></p>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleLogin()} placeholder="Enter password"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" autoFocus />
-                {loginError && <p className="text-red-600 text-xs mt-2">{loginError}</p>}
-                <button onClick={handleLogin} className="w-full mt-3 bg-gradient-to-r from-blue-700 to-emerald-600 text-white py-2 rounded-md font-semibold hover:opacity-90 transition">Sign in</button>
-              </div>
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    function AboutSection() {
-      return (
-        <section className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border border-emerald-100 p-8">
-            <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2"><Sparkles size={22} /> Bio</h2>
-            <div className="space-y-4 text-slate-700 leading-relaxed">
-              <p>I'm a researcher, policy analyst, and human rights practitioner working at the intersection of <span className="text-emerald-700 font-semibold">migration, peace and conflict resolution, and diaspora identity</span>. I'm completing my M.A. in Ethics, Peace, and Human Rights at American University's School of International Service, with a concentration in Peace and Conflict Resolution and a Certificate in Global Migration.</p>
-              <p>I currently serve as a <span className="text-blue-800 font-semibold">Fellow at the Stimson Center</span>, where I help lead planning for the 2026 T-20 conference and co-author flagship reports on global governance innovation, climate financing, peacekeeping, and the future of international cooperation. I'm also the <span className="text-blue-800 font-semibold">Director of Women, Peace and Security (WPS) at American University</span>, where I've built a community of students across the DMV committed to advancing the WPS agenda.</p>
-              <p>My research spans continents and methodologies. Most recently, I conducted independent field research in Guyana with Indo-Guyanese, Afro-Guyanese, and Indigenous communities, exploring how cultural practices are preserved across generations in the face of displacement. I contribute to the Roti Collective Lab, using ethnography and ArcGIS to trace how culinary traditions carry migration stories, and to the Mass Atrocity Research Initiative (MARI), where I study early warning indicators and social resilience.</p>
-              <p>Before graduate school, I spent nearly three years as an Immigration Analyst at VisaNation Law Group, reviewing family- and employment-based petitions and helping design client-facing tools to improve access to legal services. My earlier experience includes the National Immigrant Women's Advocacy Project, the Suffolk County DA's Office, and the U.S. Congress. I speak Guyanese Creole fluently and intermediate Spanish.</p>
-            </div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            <InfoCard IconComp={GraduationCap} label="Education" lines={["M.A., American University (2026)", "B.A., Political Science (2021)"]} />
-            <InfoCard IconComp={Languages} label="Languages" lines={["English", "Guyanese Creole (Fluent)", "Spanish (Intermediate)"]} />
-            <InfoCard IconComp={Cpu} label="Technical" lines={["SQL · STATA · R · NVivo", "Tableau · Power BI · ArcGIS", "Figma · Salesforce · Airtable"]} />
-          </div>
-        </section>
-      );
-    }
-
-    function InfoCard({ IconComp, label, lines }) {
-      return (
-        <div className="bg-white rounded-xl shadow-sm border border-emerald-100 p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center text-white"><IconComp size={16} /></div>
-            <h3 className="font-bold text-blue-800 text-sm tracking-wide uppercase">{label}</h3>
-          </div>
-          <ul className="text-sm text-slate-600 space-y-1">{lines.map((l, i) => <li key={i}>{l}</li>)}</ul>
-        </div>
-      );
-    }
-
-    function ResearchSection() {
-      const projects = [
-        { IconComp: Globe, title: "Independent Field Research, Guyana", period: "Dec 2025", text: "Interviewed Indo-Guyanese, Afro-Guyanese, and Indigenous communities in Georgetown and Berbice on how cultural practices are preserved and how families cope with displacement across generations. Produced qualitative analysis of social resilience and identity preservation." },
-        { IconComp: Heart, title: "Roti Collective Lab (Prof. Durrani)", period: "Oct 2025 – Present", text: "Ethnographic research on roti-making as a thread connecting migration experiences across the diaspora. Uses ArcGIS to visually document and share narratives of culinary heritage." },
-        { IconComp: Scale, title: "Mass Atrocity Research Initiative (MARI)", period: "Oct 2024 – Present", text: "Research on early warning indicators, policy engagement, and social resilience efforts. Includes analysis of how mass atrocity and genocide are taught in U.S. secondary education curricula." },
-        { IconComp: Users, title: "Stimson Center Fellowship", period: "Jan 2025 – Present", text: "Leading consultations with think tank stakeholders for the 2026 T-20 conference. Research on migration, climate financing, and peacekeeping, with co-authorship on the GGIR'25 and FIC'25 reports. Partnering with the Savannah Centre on the ANUMDI and ACUNS Annual Meeting in Nairobi." },
-      ];
-      return (
-        <section>
-          <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center gap-2"><BookOpen size={24} /> Research</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {projects.map((p, i) => {
-              const IconComp = p.IconComp;
-              return (
-                <div key={i} className="bg-white rounded-xl shadow-sm border border-emerald-100 p-6 hover:shadow-md hover:border-emerald-300 transition">
-                  <div className="flex items-start gap-3 mb-2">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center text-white shrink-0"><IconComp size={18} /></div>
-                    <div>
-                      <h3 className="font-bold text-blue-800 leading-tight">{p.title}</h3>
-                      <p className="text-xs text-emerald-700 mt-0.5">{p.period}</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-slate-600 leading-relaxed mt-2">{p.text}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      );
-    }
-
-    function ExperienceSection() {
-      const roles = [
-        { title: "Fellow", org: "Stimson Center", location: "Washington, D.C.", period: "Jan 2025 – Present", bullets: [
-          "Planning the 2026 annual T-20 conference and leading consultations with think tank stakeholders.",
-          "Researching migration, climate financing, and peacekeeping; co-authoring GGIR'25 and FIC'25 reports.",
-          "Led planning committee meetings with Nigerian partners at the Savannah Centre for the ANUMDI and ACUNS Annual Meeting in Nairobi.",
-        ]},
-        { title: "Director, Women, Peace and Security (WPS)", org: "American University", location: "Washington, D.C.", period: "Sep 2024 – Present", bullets: [
-          "Plan events (networking, panels, social), manage communications, and build a DMV-wide community of students advancing the WPS agenda.",
-        ]},
-        { title: "Immigration Analyst", org: "VisaNation Law Group", location: "Fort Lauderdale, FL", period: "Feb 2023 – Dec 2025", bullets: [
-          "Ensured USCIS compliance through regular internal audits.",
-          "Conducted UI/UX testing on custom family immigration software to identify and implement improvements.",
-          "Used CRM/CMS systems to automate workflows and extract data supporting CEO decision-making.",
-          "Designed a new client-facing program to improve intake and client-legal team communication.",
-          "Reviewed family and employment petitions, including I-130, I-485, I-765, I-864, and I-129 forms.",
-        ]},
-        { title: "Key Leader", org: "Lululemon", location: "Sunrise, FL", period: "Dec 2021 – Dec 2022", bullets: [
-          "Educated guests on product features and made tailored recommendations, contributing to a 15% sales increase during peak seasons.",
-        ]},
-        { title: "Legal Secretary", org: "Mukerjee Law Group, P.A.", location: "Coral Springs, FL", period: "Aug 2021 – Sep 2022", bullets: [
-          "Prepared and submitted complaints, motions, and notices to Florida courts on behalf of plaintiffs.",
-          "Managed attorney calendar, retrieved medical records, and facilitated client communication.",
-        ]},
-        { title: "Legal Intern", org: "National Immigrant Women's Advocacy Project", location: "Washington, D.C.", period: "Oct 2020 – May 2021", bullets: [
-          "Created toolkits on U-visa, T-visa, VAWA, Asylum, and H-1B processes, plus training materials on DV/SA.",
-          "Analyzed survivor intake procedures and staffed the hotline, connecting survivors with legal assistance.",
-        ]},
-        { title: "Interfaith Fellow", org: "American University", location: "Washington, D.C.", period: "Aug 2019 – May 2021", bullets: [
-          "Managed social media, newsletters, and events for interfaith projects; provided orientations and campus support.",
-        ]},
-        { title: "Intern", org: "Suffolk County District Attorney's Office", location: "Hauppauge, NY", period: "Jun 2020 – Aug 2020", bullets: [
-          "Researched civil justice policy proposals and authored a policy proposal on the Prison Rape Elimination Act (PREA).",
-        ]},
-        { title: "Congressional Intern", org: "Office of Rep. Brad Sherman", location: "Washington, D.C.", period: "Aug 2019 – Dec 2019", bullets: [
-          "Researched South Asian policy issues, including the Kashmir crisis, and assisted with hearing logistics.",
-          "Managed the congressman's schedule, attended hearings, and supported constituents.",
-        ]},
-        { title: "National Program Intern", org: "Congressional Hunger Center", location: "Washington, D.C.", period: "Jan 2019 – May 2019", bullets: [
-          "Supported the Bill Emerson National Hunger Fellowship, overseeing the work of 25 fellows across the U.S.",
-          "Conducted comparative evaluations of D.C.-area food banks and anti-poverty policies.",
-        ]},
-      ];
-      return (
-        <section>
-          <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center gap-2"><Briefcase size={24} /> Experience</h2>
-          <div className="space-y-4">
-            {roles.map((r, i) => (
-              <div key={i} className="bg-white rounded-xl shadow-sm border border-emerald-100 p-6 hover:border-emerald-300 hover:shadow-md transition">
-                <div className="flex flex-col md:flex-row md:justify-between md:items-baseline gap-1 mb-2">
-                  <div>
-                    <h3 className="font-bold text-blue-800">{r.title}</h3>
-                    <p className="text-sm text-emerald-700 font-medium">{r.org} · {r.location}</p>
-                  </div>
-                  <p className="text-xs text-slate-500 font-medium">{r.period}</p>
-                </div>
-                <ul className="mt-3 space-y-1.5 text-sm text-slate-600">
-                  {r.bullets.map((b, j) => <li key={j} className="flex gap-2"><span className="text-emerald-500 shrink-0 mt-1">▸</span><span>{b}</span></li>)}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
-      );
-    }
-
-    function PublicationsSection() {
-      const pubs = [
-        { title: "The Human Right to Reparations: Principles, Provisions, and Pathways to Reparatory Justice for Africans and People of African Descent", venue: "American University Futures of Democracy, Tech & Human Rights Lab", year: "2025" },
-        { title: "Future of International Cooperation Report 2025 — Justice in Action: Beyond Promises to Progress", venue: "Stimson Center", year: "2025" },
-        { title: "Global Governance Innovation Report 2025 — Advancing the Pact for the Future and Environmental Governance", venue: "Stimson Center", year: "2025" },
-        { title: "Girls Left Behind: How Legal Gaps and Social Norms Sustain Child Marriage", venue: "Stimson Center", year: "2025" },
-        { title: "Why Are Child Marriage Rates Stagnant in the Caribbean and Latin America?", venue: "Inter-American Foundation (IAF)", year: "2024" },
-      ];
-      return (
-        <section>
-          <h2 className="text-2xl font-bold text-blue-800 mb-6 flex items-center gap-2"><FileText size={24} /> Research & Publications</h2>
-          <div className="bg-white rounded-xl shadow-sm border border-emerald-100 divide-y divide-emerald-100">
-            {pubs.map((p, i) => (
-              <div key={i} className="p-5 hover:bg-emerald-50/30 transition">
-                <div className="flex items-start gap-4">
-                  <span className="font-mono text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold shrink-0 mt-0.5">{p.year}</span>
-                  <div>
-                    <h3 className="font-semibold text-slate-800 leading-snug">{p.title}</h3>
-                    <p className="text-sm text-emerald-700 mt-1">{p.venue}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      );
-    }
-
-    function ContactSection() {
-      return (
-        <section className="bg-white rounded-xl shadow-sm border border-emerald-100 p-8">
-          <h2 className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-2"><Mail size={22} /> Contact</h2>
-          <div className="space-y-3 text-slate-700">
-            <p><span className="font-semibold text-blue-800">Email:</span> neermalapersaud25@gmail.com</p>
-            <p><span className="font-semibold text-blue-800">Location:</span> Washington, D.C.</p>
-            <p className="pt-3 text-sm text-slate-500 italic">For research collaborations, speaking engagements, or press inquiries, email is the best way to reach me.</p>
-          </div>
-        </section>
-      );
-    }
-
-    function BlogSection({ posts, isOwner, isCreating, editingPost, draftTitle, draftBody, setDraftTitle, setDraftBody, startCreate, startEdit, cancelEdit, savePost, deletePost, selectedPost, setSelectedPost, formatDate }) {
-      if (selectedPost && !editingPost) {
-        return (
-          <article className="bg-white rounded-xl shadow-sm border border-emerald-100 p-8">
-            <button onClick={() => setSelectedPost(null)} className="text-sm text-blue-700 hover:text-emerald-600 mb-4 flex items-center gap-1">← Back to all posts</button>
-            <h2 className="text-3xl font-bold text-blue-800 mb-2">{selectedPost.title}</h2>
-            <p className="text-sm text-emerald-700 flex items-center gap-1 mb-6"><Calendar size={14} /> {formatDate(selectedPost.date)}</p>
-            <div className="max-w-none whitespace-pre-wrap text-slate-700 leading-relaxed">{selectedPost.body}</div>
-            {isOwner && (
-              <div className="mt-6 flex gap-2 border-t border-emerald-100 pt-4">
-                <button onClick={() => startEdit(selectedPost)} className="px-3 py-1.5 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800 flex items-center gap-1"><Edit2 size={14} /> Edit</button>
-                <button onClick={() => deletePost(selectedPost.id)} className="px-3 py-1.5 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center gap-1"><Trash2 size={14} /> Delete</button>
-              </div>
-            )}
-          </article>
-        );
+          </div>`;
+        return;
       }
 
-      if (isCreating || editingPost) {
-        return (
-          <section className="bg-white rounded-xl shadow-sm border-t-4 border-emerald-500 p-8">
-            <h2 className="text-xl font-bold text-blue-800 mb-4">{isCreating ? "New post" : "Edit post"}</h2>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Title</label>
-            <input type="text" value={draftTitle} onChange={e => setDraftTitle(e.target.value)} placeholder="Post title" className="w-full px-3 py-2 border border-slate-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Body</label>
-            <textarea value={draftBody} onChange={e => setDraftBody(e.target.value)} placeholder="Write your post..." rows={12} className="w-full px-3 py-2 border border-slate-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y" />
-            <div className="flex gap-2">
-              <button onClick={savePost} disabled={!draftTitle.trim() || !draftBody.trim()} className="px-4 py-2 bg-gradient-to-r from-blue-700 to-emerald-600 text-white rounded-md font-semibold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"><Save size={16} /> {isCreating ? "Publish" : "Save changes"}</button>
-              <button onClick={cancelEdit} className="px-4 py-2 bg-slate-200 text-slate-700 rounded-md font-semibold hover:bg-slate-300">Cancel</button>
-            </div>
-          </section>
-        );
+      if (selectedPost) {
+        container.innerHTML = `
+          <div class="post-full">
+            <button class="back-btn" onclick="selectedPost=null;renderBlog()">← Back to all posts</button>
+            <h2>${escHtml(selectedPost.title)}</h2>
+            <p class="post-date">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              ${formatDate(selectedPost.date)}
+            </p>
+            <div class="post-full-body">${escHtml(selectedPost.body)}</div>
+            ${isOwner ? `<div class="post-actions">
+              <button class="btn-edit" onclick="startEdit('${selectedPost.id}')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg> Edit
+              </button>
+              <button class="btn-delete" onclick="deletePost('${selectedPost.id}')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Delete
+              </button>
+            </div>` : ''}
+          </div>`;
+        return;
       }
 
-      return (
-        <section>
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-blue-800">Notes from the Field</h2>
-              <p className="text-sm text-slate-500">Weekly reflections on migration, research, and the diaspora.</p>
-            </div>
-            {isOwner && <button onClick={startCreate} className="px-4 py-2 bg-gradient-to-r from-blue-700 to-emerald-600 text-white rounded-md font-semibold hover:opacity-90 flex items-center gap-1 shadow-sm"><Plus size={16} /> New post</button>}
-          </div>
-          {posts.length === 0 ? (
-            <div className="bg-white rounded-xl border border-emerald-100 p-8 text-center text-slate-500">No posts yet.{isOwner && " Click \"New post\" to publish the first one."}</div>
-          ) : (
-            <div className="space-y-4">
-              {posts.map(post => (
-                <article key={post.id} className="bg-white rounded-xl shadow-sm border border-emerald-100 hover:border-emerald-300 hover:shadow-md transition overflow-hidden">
-                  <div className="p-6">
-                    <button onClick={() => setSelectedPost(post)} className="text-left w-full group">
-                      <h3 className="text-xl font-bold text-blue-800 group-hover:text-emerald-700 transition">{post.title}</h3>
-                      <p className="text-xs text-emerald-700 flex items-center gap-1 mt-1 mb-3"><Calendar size={12} /> {formatDate(post.date)}</p>
-                      <p className="text-slate-600 line-clamp-3">{post.body}</p>
-                      <span className="text-sm text-blue-700 font-semibold mt-3 inline-flex items-center gap-1 group-hover:gap-2 transition-all">Read more <ChevronRight size={14} /></span>
-                    </button>
-                    {isOwner && (
-                      <div className="mt-4 pt-4 border-t border-emerald-100 flex gap-2">
-                        <button onClick={() => startEdit(post)} className="px-3 py-1 text-xs bg-blue-700 text-white rounded hover:bg-blue-800 flex items-center gap-1"><Edit2 size={12} /> Edit</button>
-                        <button onClick={() => deletePost(post.id)} className="px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-1"><Trash2 size={12} /> Delete</button>
-                      </div>
-                    )}
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
-      );
+      if (posts.length === 0) {
+        container.innerHTML = `<div class="card" style="text-align:center;color:#94a3b8;">No posts yet.${isOwner ? ' Click "New post" to publish the first one.' : ''}</div>`;
+        return;
+      }
+
+      container.innerHTML = posts.map(post => `
+        <div class="post-card">
+          <button class="post-title-btn" onclick="viewPost('${post.id}')">${escHtml(post.title)}</button>
+          <p class="post-date">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            ${formatDate(post.date)}
+          </p>
+          <p class="post-excerpt">${escHtml(post.body)}</p>
+          <button class="read-more" onclick="viewPost('${post.id}')">Read more ›</button>
+          ${isOwner ? `<div class="post-actions">
+            <button class="btn-edit" onclick="startEdit('${post.id}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg> Edit
+            </button>
+            <button class="btn-delete" onclick="deletePost('${post.id}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Delete
+            </button>
+          </div>` : ''}
+        </div>`).join('');
     }
 
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<App />);
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    renderBlog();
   </script>
 </body>
 </html>
